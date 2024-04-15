@@ -186,12 +186,19 @@ class MyWidget extends StatefulWidget {
 class _MyWidgetState extends State<MyWidget> {
   List<int> numbers = [];
   // int counter = 0;
+  bool showTitle = false;
 
   void onClicked() {
     setState(() {
       // counter += 1;
       numbers.add(numbers.length);
       print(numbers);
+    });
+  }
+
+  void toggleTitle() {
+    setState(() {
+      showTitle = !showTitle;
     });
   }
 
@@ -211,7 +218,11 @@ class _MyWidgetState extends State<MyWidget> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const MyLargeTitle(),
+              showTitle ? const MyLargeTitle() : const Text('nothing'),
+              IconButton(
+                onPressed: toggleTitle,
+                icon: const Icon(Icons.remove_red_eye),
+              ),
               const Text(
                 "Click Count",
                 style: TextStyle(
@@ -238,13 +249,35 @@ class _MyWidgetState extends State<MyWidget> {
   }
 }
 
-class MyLargeTitle extends StatelessWidget {
+class MyLargeTitle extends StatefulWidget {
   const MyLargeTitle({
     super.key,
   });
 
   @override
+  State<MyLargeTitle> createState() => _MyLargeTitleState();
+}
+
+class _MyLargeTitleState extends State<MyLargeTitle> {
+  // build() 보다 앞에 있어야함
+  // 1회만 호출됨
+  @override
+  void initState() {
+    super.initState();
+    print('initState!');
+  }
+
+  // 스크린에서 제거될 때 호출됨
+  // 위젯이 위젯 트리에서 삭제되기 전에 취소하고 싶은 액션들을 취소할 때 많이 사용됨
+  @override
+  void dispose() {
+    super.dispose();
+    print('dispose!');
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print('build!');
     return Text(
       'Larg Text',
       style: TextStyle(
